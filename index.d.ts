@@ -257,6 +257,11 @@ interface ConfigParams {
   auth0Logout?: boolean;
 
   /**
+   * Boolean value to enable idpLogout with an Auth0 custom domain
+   */
+  federatedLogout?: boolean;
+
+  /**
    *  URL parameters used when redirecting users to the authorization server to log in.
    *
    *  If this property is not provided by your application, its default values will be:

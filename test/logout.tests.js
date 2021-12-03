@@ -123,6 +123,31 @@ describe('logout route', async () => {
     );
   });
 
+  it('should be able to perform an auth0 federated logout', async () => {
+    server = await createServer(
+      auth({
+        ...defaultConfig,
+        issuerBaseURL: 'https://test.eu.auth0.com',
+        idpLogout: true,
+        auth0Logout: true,
+        federatedLogout: true,
+      })
+    );
+
+    const { jar } = await login();
+    const { response, session: loggedOutSession } = await logout(jar);
+    assert.notOk(loggedOutSession.id_token);
+    assert.equal(response.statusCode, 302);
+    assert.include(
+      response.headers,
+      {
+        location:
+          'https://op.example.com/v2/logout?returnTo=http%3A%2F%2Fexample.org&client_id=__test_client_id__&federated=',
+      },
+      'should redirect to the identity provider'
+    );
+  });
+
   it('should redirect to postLogoutRedirect', async () => {
     server = await createServer(
       auth({
